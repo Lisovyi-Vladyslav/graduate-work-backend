@@ -1,0 +1,979 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "GOOSETRACK: an app for proactive goslings ;)",
+    "version": "2.0"
+  },
+  "servers": [
+    {
+      "url": "https://goosetrack.onrender.com/api"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "user sign UP",
+        "tags": [
+          "AUTH"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User has been created!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User created!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBadRequest"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already exists!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorConflict"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "user sign IN",
+        "tags": [
+          "AUTH"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User has been created!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FullUserToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBadRequest"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not Found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorNotFound"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "get": {
+        "summary": "user log OUT",
+        "tags": [
+          "USER"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization Token",
+            "schema": {
+              "type": "string",
+              "format": "jwt"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NDNlN2M4ZjYzMjFhOTJmNmM5YWUxOCIsImlhdCI6MTY4MjE3MTg1OSwiZXhwIjoxNjgyMjU4MjU5fQ.Ka6UbaAghg7kw1MzLPKh3S7YTZ9lzQQ6ENBTopfNsPY",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User has been logged out!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User logged out!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "You are not authoruzed for this action!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This user does not exist!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorNotFound"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/current": {
+      "get": {
+        "summary": "get current user",
+        "tags": [
+          "USER"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization Token",
+            "schema": {
+              "type": "string",
+              "format": "jwt"
+            },
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NDNlN2M4ZjYzMjFhOTJmNmM5YWUxOCIsImlhdCI6MTY4MjE3MTg1OSwiZXhwIjoxNjgyMjU4MjU5fQ.Ka6UbaAghg7kw1MzLPKh3S7YTZ9lzQQ6ENBTopfNsPY"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is valid!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FullUserToken"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "You are not authoruzed for this action!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/info": {
+      "patch": {
+        "summary": "update user info",
+        "tags": [
+          "USER"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization Token",
+            "schema": {
+              "type": "string",
+              "format": "jwt"
+            },
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NDNlN2M4ZjYzMjFhOTJmNmM5YWUxOCIsImlhdCI6MTY4MjE3MTg1OSwiZXhwIjoxNjgyMjU4MjU5fQ.Ka6UbaAghg7kw1MzLPKh3S7YTZ9lzQQ6ENBTopfNsPY"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Robert Nesta Marley"
+                  },
+                  "birthday": {
+                    "type": "string",
+                    "example": "06/02/1945"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "bob-marley@gmail.com"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "555-15-647"
+                  },
+                  "telegram": {
+                    "type": "string",
+                    "example": "@bamboocha"
+                  },
+                  "avatarURL": {
+                    "type": "string",
+                    "example": "http://smile.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User was updated Updated User:",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FullUserNoToken"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "You are not authorized for this action!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not Found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorNotFound"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "summary": "get all tasks",
+        "tags": [
+          "TASKS"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization Token",
+            "schema": {
+              "type": "string",
+              "format": "jwt"
+            },
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NDNlN2M4ZjYzMjFhOTJmNmM5YWUxOCIsImlhdCI6MTY4MjE3MTg1OSwiZXhwIjoxNjgyMjU4MjU5fQ.Ka6UbaAghg7kw1MzLPKh3S7YTZ9lzQQ6ENBTopfNsPY"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tasks"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "You are not authorized for this action!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "create new task",
+        "tags": [
+          "TASKS"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization Token",
+            "schema": {
+              "type": "string",
+              "format": "jwt"
+            },
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NDNlN2M4ZjYzMjFhOTJmNmM5YWUxOCIsImlhdCI6MTY4MjE3MTg1OSwiZXhwIjoxNjgyMjU4MjU5fQ.Ka6UbaAghg7kw1MzLPKh3S7YTZ9lzQQ6ENBTopfNsPY"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "My Task"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "2023-05-01T21:00:00.000Z",
+                    "example": "2023-05-01T21:00:00.000+00:00"
+                  },
+                  "startTime": {
+                    "type": "string",
+                    "example": "10:30"
+                  },
+                  "endTime": {
+                    "type": "string",
+                    "example": "15:00"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high"
+                    ],
+                    "example": "medium"
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "toDo",
+                      "inProgress",
+                      "done"
+                    ],
+                    "example": "toDo"
+                  }
+                },
+                "required": [
+                  "name",
+                  "date",
+                  "startTime",
+                  "endTime",
+                  "priority",
+                  "category"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Task created!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBadRequest"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "You are not authorized for this action!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "patch": {
+        "summary": "update task",
+        "tags": [
+          "TASKS"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization Token",
+            "schema": {
+              "type": "string",
+              "format": "jwt"
+            },
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NDNlN2M4ZjYzMjFhOTJmNmM5YWUxOCIsImlhdCI6MTY4MjE3MTg1OSwiZXhwIjoxNjgyMjU4MjU5fQ.Ka6UbaAghg7kw1MzLPKh3S7YTZ9lzQQ6ENBTopfNsPY"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "example": "6446ec821a2c195f23075f42"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "My Task"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "2023-05-01T21:00:00.000Z",
+                    "example": "2023-05-01T21:00:00.000+00:00"
+                  },
+                  "startTime": {
+                    "type": "string",
+                    "example": "10:30"
+                  },
+                  "endTime": {
+                    "type": "string",
+                    "example": "15:00"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high"
+                    ],
+                    "example": "medium"
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "toDo",
+                      "inProgress",
+                      "done"
+                    ],
+                    "example": "toDo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task updated!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBadRequest"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "You are not authorized for this action!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorNotFound"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "remove task",
+        "tags": [
+          "TASKS"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization Token",
+            "schema": {
+              "type": "string",
+              "format": "jwt"
+            },
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NDNlN2M4ZjYzMjFhOTJmNmM5YWUxOCIsImlhdCI6MTY4MjE3MTg1OSwiZXhwIjoxNjgyMjU4MjU5fQ.Ka6UbaAghg7kw1MzLPKh3S7YTZ9lzQQ6ENBTopfNsPY"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "example": "6446ec821a2c195f23075f42"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task removed!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Task removed!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "You are not authorized for this action!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorNotFound"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "ReggaeBoy"
+          },
+          "email": {
+            "type": "string",
+            "example": "bob-marley@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "takeITeasyBrUh"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "password"
+        ]
+      },
+      "LoginUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "bob-marley@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "takeITeasyBrUh555"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "FullUserNoToken": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "ReggaeBoy"
+              },
+              "email": {
+                "type": "string",
+                "example": "bob-marley@gmail.com"
+              },
+              "phone": {
+                "type": "string",
+                "example": "555-15-274"
+              },
+              "birthday": {
+                "type": "string",
+                "example": "06/02/1945"
+              },
+              "avatarURL": {
+                "type": "string",
+                "example": "http://smile.jpg"
+              },
+              "telegram": {
+                "type": "string",
+                "example": "bamboocha"
+              }
+            }
+          }
+        }
+      },
+      "FullUserToken": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "ReggaeBoy"
+              },
+              "email": {
+                "type": "string",
+                "example": "bob-marley@gmail.com"
+              },
+              "phone": {
+                "type": "string",
+                "example": "555-15-274"
+              },
+              "birthday": {
+                "type": "string",
+                "example": "06/02/1945"
+              },
+              "avatarURL": {
+                "type": "string",
+                "example": "http://smile.jpg"
+              },
+              "telegram": {
+                "type": "string",
+                "example": "bamboocha"
+              },
+              "token": {
+                "type": "string",
+                "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NDNlN2M4ZjYzMjFhOTJmNmM5YWUxOCIsImlhdCI6MTY4MjE3MTg1OSwiZXhwIjoxNjgyMjU4MjU5fQ.Ka6UbaAghg7kw1MzLPKh3S7YTZ9lzQQ6ENBTopfNsPY"
+              }
+            }
+          }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Task"
+              },
+              "date": {
+                "type": "string",
+                "format": "2023-05-01T21:00:00.000Z",
+                "example": "2023-05-01T21:00:00.000+00:00"
+              },
+              "startTime": {
+                "type": "string",
+                "example": "10:30"
+              },
+              "endTime": {
+                "type": "string",
+                "example": "15:00"
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ],
+                "example": "medium"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "toDo",
+                  "inProgress",
+                  "done"
+                ],
+                "example": "toDo"
+              }
+            }
+          }
+        }
+      },
+      "Tasks": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Task"
+        }
+      },
+      "ErrorNotFound": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 404
+          },
+          "message": {
+            "type": "string",
+            "example": "Not Found"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "ErrorBadRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Bad request"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "ErrorUnauthorized": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 401
+          },
+          "message": {
+            "type": "string",
+            "example": "Unauthorized"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "ErrorConflict": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 409
+          },
+          "message": {
+            "type": "string",
+            "example": "Conflict! User with such email already exists!"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "ErrorServer": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 500
+          },
+          "message": {
+            "type": "string",
+            "example": "Internal Server Error. Check what you've done. NEVER TRY AGAIN!"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      }
+    }
+  }
+}
