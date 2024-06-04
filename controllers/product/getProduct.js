@@ -27,7 +27,10 @@ const getProducts = catchAsync(async (req, res, next) => {
   // //   "-owner -updatedAt -createdAt"
   // // );
   
-  const {p = 1, perPage = 10, lowPrice = 0, highPrice, ...parameters}  = req.query;
+  const {p: currentPage = 1, perPage = 10, lowPrice = 0, highPrice, ...parameters}  = req.query;
+
+  const p = currentPage - 1;
+  // console.log(req.query)
   const ids = req.body;
 
   console.log(ids)
@@ -45,7 +48,7 @@ return masuv
     { $match: { 
       ...(parameters.length > 0 ? { $and: createFilter(parameters) } : {})
      },},
-    { $project: { namespaceId: 1, capacity: 1, color: 1, priceDiscount: 1} },
+    // { $project: { namespaceId: 1, capacity: 1, color: 1, priceDiscount: 1} },
     { $group: {
       _id: "$namespaceId",
       firstDoc: { $first: "$$ROOT" }
@@ -60,9 +63,9 @@ return masuv
   const products = result.map(result => result.firstDoc);
 
 
-  console.log('--------------------------------')
-  console.log(products)
-  console.log('--------------------------------')
+  // console.log('--------------------------------')
+  // console.log(products)
+  // console.log('--------------------------------')
 
 
   res.status(200).json({

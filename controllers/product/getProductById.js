@@ -4,6 +4,8 @@ const { catchAsync } = require("../../utils");
 
 const getProductById = catchAsync(async (req, res, next) => {
   const ids = req.body;
+  // console.log('sdfgh')
+  // console.log(req)
   
 
   const getProductById = await Product.find({ _id: { $in: ids } }).select(
